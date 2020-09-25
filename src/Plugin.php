@@ -35,8 +35,8 @@ class Plugin implements PluginInterface
             }
         }
 
-        $rfs = Factory::createRemoteFilesystem($io, $composer->getConfig());
-        $manager = RepositoryFactory::manager($io, $composer->getConfig(), $composer->getEventDispatcher(), $rfs);
+        $httpDownloader = Factory::createHttpDownloader($io, $composer->getConfig());
+        $manager = RepositoryFactory::manager($io, $composer->getConfig(), $httpDownloader, $composer->getEventDispatcher());
         $setRepositories = \Closure::bind(function (RepositoryManager $manager) use ($extra) {
             $manager->repositoryClasses = $this->repositoryClasses;
             $manager->setRepositoryClass('composer', TruncatedComposerRepository::class);
