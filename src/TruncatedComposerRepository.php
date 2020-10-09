@@ -6,14 +6,14 @@ use Composer\Config;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\IO\IOInterface;
 use Composer\Repository\ComposerRepository as BaseComposerRepository;
-use Composer\Util\RemoteFilesystem;
+use Composer\Util\HttpDownloader;
 
 class TruncatedComposerRepository extends BaseComposerRepository
 {
-    public function __construct(array $repoConfig, IOInterface $io, Config $config, EventDispatcher $eventDispatcher = null, RemoteFilesystem $rfs = null)
+    public function __construct(array $repoConfig, IOInterface $io, Config $config, HttpDownloader $httpDownloader = null, EventDispatcher $eventDispatcher = null)
     {
-        parent::__construct($repoConfig, $io, $config, $eventDispatcher, $rfs);
-        $this->cache = new Cache($io, $config->get('cache-repo-dir').'/'.preg_replace('{[^a-z0-9.]}i', '-', $this->url), 'a-z0-9.$');
+        parent::__construct($repoConfig, $io, $config, $httpDownloader, $eventDispatcher);
+        $this->cache = new Cache($io, $config->get('cache-repo-dir').'/'.preg_replace('{[^a-z0-9.]}i', '-', $this->getRepoName()), 'a-z0-9.$');
     }
     protected function fetchFile($filename, $cacheKey = null, $sha256 = null, $storeLastModifiedTime = false)
     {
